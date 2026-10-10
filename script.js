@@ -43,3 +43,14 @@ document.querySelectorAll('[data-wish]').forEach(b=>b.setAttribute('aria-pressed
 const paragraphs=document.querySelectorAll('#wish-result p');
 wishes[button.dataset.wish].forEach((text,i)=>paragraphs[i].textContent=text);
 }));
+const replayStories={
+majesty:{date:'8 OCTOBER 2026',messages:[['her','Her majesty*'],['me','Her majesty was born'],['her','I want the world😌'],['me','Okay'],['me','Noted']],note:'Request received, ma. This little blue world is my reply. No generic queen broadcast. 😌❤️'},
+maldives:{date:'3 APRIL 2026',messages:[['me','Who will give you honeymoon in Maldives'],['her','My man☹️'],['me','Here he is']],note:'The man has identified himself. The Maldives budget is still accepting contributions from Her Majesty. 🤭😹❤️'},
+patience:{date:'27 MAY 2026',messages:[['me','I would be patient 😚'],['her','I would so much love that'],['her','Oshey ejeh mi']],note:'No punchline for this one. I still want to love you with patience, kindness, and care. ❤️'},
+dreamland:{date:'17 AUGUST 2026',messages:[['me','I would take you all over the world'],['me','And we would continue the love story in Jannah too🥹'],['her','Okay sir but tonight I need to go to dream land first😹😹'],['her',"Bi'idhnillah"],['me','Okay ma']],note:'World tour postponed. Her Majesty needs sleep. Even my romance must respect your bedtime. 😭❤️'}
+};
+let replayKey='majesty',replayStep=0;
+const replayNext=document.querySelector('#replay-next');
+function resetReplay(key){replayKey=key;replayStep=0;document.querySelector('#replay-messages').replaceChildren();document.querySelector('#replay-date').textContent=replayStories[key].date;document.querySelector('#replay-note').textContent='';replayNext.textContent='Open the first message ♡';document.querySelectorAll('[data-replay]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.replay===key)));}
+document.querySelectorAll('[data-replay]').forEach(b=>b.addEventListener('click',()=>resetReplay(b.dataset.replay)));
+replayNext.addEventListener('click',()=>{const story=replayStories[replayKey];if(replayStep===story.messages.length){resetReplay(replayKey);return;}const [speaker,text]=story.messages[replayStep++];const bubble=document.createElement('p');bubble.className='bubble '+speaker;const label=document.createElement('span');label.className='replay-speaker';label.textContent=speaker==='her'?'Anike':'Your Shazily';bubble.append(label,document.createTextNode(text));document.querySelector('#replay-messages').append(bubble);replayNext.textContent=replayStep===story.messages.length?'Read it again ↺':'And then? ♡';if(replayStep===story.messages.length)document.querySelector('#replay-note').textContent=story.note;});
