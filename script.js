@@ -33,3 +33,13 @@ document.querySelector('#chocolate').addEventListener('click',e=>{e.currentTarge
 const letterDialog=document.querySelector('#letter-dialog');document.querySelector('#open-letter').addEventListener('click',()=>openDialog(letterDialog));
 document.querySelector('#save-letter').addEventListener('click',()=>{const content='My Anike. ❤️\n\n'+document.querySelector('.letter-body').innerText;const url=URL.createObjectURL(new Blob([content],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='A-birthday-letter-for-Anike.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
 let ticking=false;function progress(){const range=document.documentElement.scrollHeight-innerHeight;document.querySelector('.progress').style.width=(range>0?scrollY/range*100:0)+'%';ticking=false;}addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(progress);ticking=true;}},{passive:true});addEventListener('resize',progress);progress();
+const wishes={
+peace:['اللَّهُمَّ ارْزُقْهَا سَكِينَةَ الْقَلْبِ','O Allah, grant her tranquillity of heart.','May your heart find rest, ẹwà mi. Even Her Majesty deserves to put the crown down sometimes. ❤️'],
+knowledge:['اللَّهُمَّ ارْزُقْهَا عِلْمًا نَافِعًا','O Allah, grant her beneficial knowledge.','For every lecture, every clinical, every tired evening. May Allah bless what you learn and the people your hands will care for. Proud of you, Nurse Olaiya. 🤲🏾'],
+future:['اللَّهُمَّ بَارِكْ لَهَا فِي عُمْرِهَا','O Allah, bless her life.','More reasons to smile. More doors of khayr. More beautiful chapters, bi’idhnillah. And yes, more outings with your fine boy. 🤭❤️']
+};
+document.querySelectorAll('[data-wish]').forEach(button=>button.addEventListener('click',()=>{
+document.querySelectorAll('[data-wish]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+const paragraphs=document.querySelectorAll('#wish-result p');
+wishes[button.dataset.wish].forEach((text,i)=>paragraphs[i].textContent=text);
+}));
