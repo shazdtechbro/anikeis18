@@ -61,3 +61,18 @@ const replayNext=document.querySelector('#replay-next');
 function resetReplay(key){replayKey=key;replayStep=0;document.querySelector('#replay-messages').replaceChildren();document.querySelector('#replay-date').textContent=replayStories[key].date;document.querySelector('#replay-note').textContent='';replayNext.textContent='Open the first message ♡';document.querySelectorAll('[data-replay]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.replay===key)));}
 document.querySelectorAll('[data-replay]').forEach(b=>b.addEventListener('click',()=>resetReplay(b.dataset.replay)));
 replayNext.addEventListener('click',()=>{const story=replayStories[replayKey];if(replayStep===story.messages.length){resetReplay(replayKey);return;}const [speaker,text]=story.messages[replayStep++];const bubble=document.createElement('p');bubble.className='bubble '+speaker;const label=document.createElement('span');label.className='replay-speaker';label.textContent=speaker==='her'?'Anike':'Your Shazily';bubble.append(label,document.createTextNode(text));document.querySelector('#replay-messages').append(bubble);replayNext.textContent=replayStep===story.messages.length?'Read it again ↺':'And then? ♡';if(replayStep===story.messages.length)document.querySelector('#replay-note').textContent=story.note;});
+const motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
+const revealTargets=[...document.querySelectorAll('.heading,.photo-card,.envelope,.calendar-grid article,.quran-card,.blessing-card,.fine-boy-section>div,.replay-phone')];
+const revealObserver='IntersectionObserver' in window?new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('in-view');revealObserver.unobserve(entry.target);}}),{threshold:0.08}):null;
+if(revealObserver&&!motionPreference.matches)revealTargets.forEach((el,i)=>{el.classList.add('scroll-reveal');el.style.setProperty('--reveal-delay',Math.min(i%3*70,140)+'ms');revealObserver.observe(el);});
+motionPreference.addEventListener('change',e=>{if(e.matches){revealTargets.forEach(el=>el.classList.add('in-view'));revealObserver?.disconnect();document.querySelector('.hero-photo').style.removeProperty('--photo-drift');}});
+const whisper=document.querySelector('#scroll-whisper');let whisperDismissed=false,whisperTimer;
+const whisperNotes=new Map([
+['blue','Scroll small small, ma. These fine pictures are not going anywhere. 🤭'],
+['places','Ah, Maryland. See how your fine boy suddenly remembers all his teeth. 😹'],
+['us','Exhibit B: you disturbing me. I have kept the receipts, Her Majesty. 🌚❤️'],
+['dua','Okay, let me behave for a minute. These prayers, I mean them. 🤲🏾❤️']
+]);
+if('IntersectionObserver' in window){const noteObserver=new IntersectionObserver(entries=>{for(const entry of entries){if(!entry.isIntersecting||whisperDismissed)continue;noteObserver.unobserve(entry.target);clearTimeout(whisperTimer);document.querySelector('#whisper-text').textContent=whisperNotes.get(entry.target.id);whisper.hidden=false;whisperTimer=setTimeout(()=>{whisper.hidden=true;},6500);}},{threshold:0.15});whisperNotes.forEach((_,id)=>noteObserver.observe(document.getElementById(id)));}
+document.querySelector('#dismiss-whisper').addEventListener('click',()=>{whisperDismissed=true;clearTimeout(whisperTimer);whisper.hidden=true;});
+let driftQueued=false;addEventListener('scroll',()=>{if(motionPreference.matches||driftQueued)return;driftQueued=true;requestAnimationFrame(()=>{const hero=document.querySelector('.hero');if(scrollY<hero.offsetHeight)document.querySelector('.hero-photo').style.setProperty('--photo-drift',Math.min(scrollY*0.035,20)+'px');driftQueued=false;});},{passive:true});
