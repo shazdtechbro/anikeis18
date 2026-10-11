@@ -112,10 +112,10 @@ let confettiCleanup=null;
 function celebrateBirthday(){
 const layer=document.querySelector('#birthday-confetti');
 document.querySelector('#celebration-status').textContent='Happy 18th birthday, Anike! All this joy is for you. ♡';
-if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 if(confettiCleanup)clearTimeout(confettiCleanup);layer.replaceChildren();
 const palette=['#92c9ed','#c3a2dc','#f0a8c9','#ffe0a3','#ffffff','#6d92ba'];
-for(let i=0;i<70;i++){const piece=document.createElement('span');piece.className='confetti-piece';piece.style.setProperty('--confetti-x',Math.random()*100+'vw');piece.style.setProperty('--confetti-drift',(Math.random()-.5)*240+'px');piece.style.setProperty('--confetti-turn',(Math.random()-.5)*1200+'deg');piece.style.setProperty('--confetti-delay',Math.random()*.55+'s');piece.style.setProperty('--confetti-duration',2.6+Math.random()*1.2+'s');piece.style.background=palette[i%palette.length];if(i%4===0)piece.classList.add('confetti-dot');layer.append(piece);}
+for(let i=0;i<70;i++){const piece=document.createElement('span');piece.className='confetti-piece';piece.style.setProperty('--confetti-x',Math.random()*100+'vw');piece.style.setProperty('--confetti-drift',(Math.random()-.5)*240+'px');piece.style.setProperty('--confetti-turn',(Math.random()-.5)*1200+'deg');piece.style.setProperty('--confetti-delay',Math.random()*.55+'s');piece.style.setProperty('--confetti-duration',2.6+Math.random()*1.2+'s');piece.style.background=palette[i%palette.length];if(i%4===0)piece.classList.add('confetti-dot');if(reduced){piece.classList.add('confetti-still');piece.style.top=(8+Math.random()*78)+'vh';}layer.append(piece);}
 confettiCleanup=setTimeout(()=>{layer.replaceChildren();confettiCleanup=null;},4700);
 }
 document.querySelector('#celebrate-again').addEventListener('click',celebrateBirthday);
